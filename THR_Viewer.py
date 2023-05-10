@@ -23,14 +23,15 @@ while True:
 
         #Make increasing angle clockwise
         circle.set_theta_direction(-1)
+        
         #Shift 0 deg to top of graph
         circle.set_theta_offset(np.pi/2.0)
 
-        circle.plot(reader.theta, reader.rho, marker='none', linestyle='--')
-
+        #Open plot window maximized
         figManager = plt.get_current_fig_manager()
         figManager.window.state('zoomed')
 
+        #Configure how many frames the animation will have
         ticks = 100
         speedup = int(len(reader.theta)/ticks)
 
@@ -50,6 +51,7 @@ while True:
         # display the Polar plot
         plt.show()
     except:
+        #User aborted file selection
         break
 
 print("File selection aborted")
