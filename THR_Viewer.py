@@ -8,37 +8,48 @@ from matplotlib.animation import FuncAnimation
 root = tk.Tk()
 root.withdraw()
 
-file_path = filedialog.askopenfilename()
+while True:
+    try:
+        #Interactive file selection
+        file_path = filedialog.askopenfilename()
 
-columns = ["theta","rho"]
+        #THR files do not typically have headers
+        columns = ["theta","rho"]
+        reader = pd.read_csv(file_path, names=columns, delimiter=" ", header=None, comment='#')
 
-reader = pd.read_csv(file_path, names=columns, delimiter=" ", header=None, comment='#')
-  
-fig = plt.figure()
+        #Initialize plot and subplot
+        fig = plt.figure()
+        circle = fig.add_subplot(projection='polar')
 
-circle = fig.add_subplot(projection='polar')
+        #Make increasing angle clockwise
+        circle.set_theta_direction(-1)
+        #Shift 0 deg to top of graph
+        circle.set_theta_offset(np.pi/2.0)
 
-circle.set_theta_direction(-1)
+        circle.plot(reader.theta, reader.rho, marker='none', linestyle='--')
 
-circle.set_theta_offset(np.pi/2.0)
+        figManager = plt.get_current_fig_manager()
+        figManager.window.state('zoomed')
 
-circle.plot(reader.theta, reader.rho, marker='none', linestyle='--')
-
-ticks = 100
-speedup = int(len(reader.theta)/ticks)
-
-
-def animate(i):
-    circle.clear()
-    # Plot that point using the x and y coordinates
-    circle.plot(reader.theta[0:i*speedup], reader.rho[0:i*speedup], marker='none', linestyle='--')
-    # Set the x and y axis to display a fixed range
-    circle.set_xticks([])
-    circle.set_yticks([])
-    circle.set_ylim([0, 1])
-
-ani = FuncAnimation(fig, animate, frames=ticks+30, interval=10, repeat=True)
+        ticks = 100
+        speedup = int(len(reader.theta)/ticks)
 
 
-# display the Polar plot
-plt.show()
+        def animate(i):
+            circle.clear()
+            # Plot that point using the x and y coordinates
+            circle.plot(reader.theta[0:i*speedup], reader.rho[0:i*speedup], marker='none', linestyle='--')
+            # Set the x and y axis to display a fixed range
+            circle.set_xticks([])
+            circle.set_yticks([])
+            circle.set_ylim([0, 1])
+
+        ani = FuncAnimation(fig, animate, frames=ticks+30, interval=10, repeat=True)
+
+
+        # display the Polar plot
+        plt.show()
+    except:
+        break
+
+print("File selection aborted")
