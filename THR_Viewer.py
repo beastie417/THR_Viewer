@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 import pandas as pd
 import tkinter as tk
 from tkinter import filedialog
 from matplotlib.animation import FuncAnimation
+
 
 root = tk.Tk()
 root.withdraw()
@@ -42,12 +44,15 @@ while True:
 
             #Make increasing angle clockwise
             circle.set_theta_direction(-1)
-        
+
             #Shift 0 deg to top of graph
             circle.set_theta_offset(np.pi/2.0)
 
-        ani = FuncAnimation(fig, animate, frames=ticks+30, interval=10, repeat=True)
+        ani = animation.FuncAnimation(fig, animate, frames=ticks+30, interval=10, repeat=True)
 
+        #Save as GIF
+        writer = animation.PillowWriter(fps=15,metadata=dict(artist='Me'),bitrate=1800)
+        ani.save(file_path.strip(".thr") + ".gif", writer = writer)
 
         # display the Polar plot
         plt.show()
